@@ -50,48 +50,54 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: TextFormField(
-                  controller: nummerControll,
-                  decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: 'Nummer eingeben',
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                    Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextFormField(
+              controller: nummerControll,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Nummer eingeben',
               ),
-              Center(
-                child: DropdownButton<String>(
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.green),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.black,
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DropdownButton<String>(
+                value: dropdownValue,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                style: const TextStyle(fontSize: 18, color: Colors.green),
+                underline: Container(
+                  //width: 300.0,
+                  height: 1,
+                  color: Colors.grey,
                 ),
+                onChanged: (String? value) {
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                items: list.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-              Center(
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: Center(
                 child: ElevatedButton(
                   onPressed: () {
                     nummers = nummerControll.text.split(' ');
@@ -99,15 +105,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                   child: const Text('Send'),
                 ),
-              )
-            ])));
+              )),
+          const Divider(
+            thickness: 2,
+            indent: 10,
+            endIndent: 10,
+            color: Colors.green,
+          ),
+        ])));
   }
 }
 
-void _sendSMS(String message, List<String> recipents) async {
-  String _result = await sendSMS(message: message, recipients: recipents)
-      .catchError((onError) {
-    print(onError);
-  });
-  print(_result);
+Future<void> _sendSMS(String message, List<String> recipents) async {
+  try {
+    String _result = await sendSMS(
+      message: message,
+      recipients: recipents,
+    );
+    //setState(() => _message = _result);
+    print(_result);
+  } catch (error) {
+    //setState(() => _message = error.toString());
+    print(error);
+  }
 }
